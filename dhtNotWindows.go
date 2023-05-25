@@ -84,6 +84,7 @@ func (dht *DHT) readBits() ([]int, error) {
 		startTime = time.Now()
 		for levelPrevious == level && time.Since(startTime) < time.Millisecond {
 			level = dht.pin.Read()
+			fmt.Printf("%+v", level)
 		}
 		durations = append(durations, time.Since(startTime))
 		levels = append(levels, levelPrevious)
@@ -101,12 +102,16 @@ func (dht *DHT) readBits() ([]int, error) {
 
 	// get last low reading so know start of data
 	var endNumber int
+	holder := []gpio.Level{}
 	for i = len(levels) - 1; ; i-- {
+		fmt.Printf("%d\n", i)
+		holder = append(holder, levels[i])
 		if levels[i] == gpio.Low {
 			endNumber = i
 			break
 		}
 		if i < 80 {
+			fmt.Printf("%+v\n", holder)
 			// not enough readings, i = 79 means endNumber is 78 or less
 			return nil, fmt.Errorf("missing some readings - low level not found")
 		}
@@ -118,6 +123,7 @@ func (dht *DHT) readBits() ([]int, error) {
 	index := 0
 	for i = startNumber; i < endNumber; i += 2 {
 		// check high levels
+		//fmt.Printf("levels[i]: %+v", levels[i])
 		if levels[i] != gpio.High {
 			return nil, fmt.Errorf("missing some readings - level not high")
 		}

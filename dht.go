@@ -2,12 +2,11 @@ package dht
 
 import (
 	"fmt"
-	"time"
-
 	"periph.io/x/host/v3"
+	"time"
 )
 
-// HostInit calls periph.io host.Init(). This needs to be done before DHT can be used.
+// HostInit calls periph.goio host.Init(). This needs to be done before DHT can be used.
 func HostInit() error {
 	_, err := host.Init()
 	return err
